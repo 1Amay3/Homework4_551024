@@ -141,9 +141,12 @@ public class Benchmark {
             threads[t].start();
         }
 
+        long totalTime = 0;
         for (int t = 0; t < threadCount; t++) {
             threads[t].join();
+            totalTime += threads[t].getElapsed();
         }
 
+        System.out.println("Average time per thread is " + totalTime / threadCount + "ms");
     }
 }

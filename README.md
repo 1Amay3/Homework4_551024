@@ -50,7 +50,6 @@ Windows: `./gradlew.bat build -x test`
 This will produce the binaries in the build folder.
 
 ### Running Benchmark main programs:
-
 __Benchmark__:
 `java -cp build/libs/homework4.jar edu.vt.ece.hw4.Benchmark <YOUR_ARGS>`
 
