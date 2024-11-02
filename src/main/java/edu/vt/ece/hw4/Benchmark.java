@@ -13,6 +13,7 @@ public class Benchmark {
     private static final String ALOCK = "ALock";
     private static final String BACKOFFLOCK = "BackoffLock";
     private static final String MCSLOCK = "MCSLock";
+    private static final String TTASLOCK = "TTASLock";
 
     public static void main(String[] args) throws Exception {
         String mode = args.length <= 0 ? "normal" : args[0];
@@ -126,7 +127,22 @@ public class Benchmark {
         System.out.println("Average time per thread is " + totalTime / threadCount + "ms");
     }
 
-    static void runBarrierCS(Lock lock, int threadcount , int iters) throws Exception{
+    static void runBarrierCS(Lock lock, int threadCount , int iters) throws Exception{
+        final Counter counter = new Counter(0);
+        final BarrierCSTestThread[] threads = new BarrierCSTestThread[threadCount];
+        BarrierCSTestThread.reset();
+
+        for (int t = 0; t < threadCount; t++) {
+            threads[t] = new BarrierCSTestThread(lock, counter, iters);
+        }
+
+        for (int t = 0; t < threadCount; t++) {
+            threads[t].start();
+        }
+
+        for (int t = 0; t < threadCount; t++) {
+            threads[t].join();
+        }
 
     }
 }
