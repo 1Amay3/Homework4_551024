@@ -1,5 +1,6 @@
 package edu.vt.ece.hw4.bench;
 
+import edu.vt.ece.hw4.barriers.TTASBarrier;
 import edu.vt.ece.hw4.locks.Lock;
 
 import java.util.concurrent.locks.ReentrantLock;
@@ -25,6 +26,7 @@ public class BarrierCSTestThread extends Thread implements ThreadId{
         long start = System.currentTimeMillis();
         for (int i = 0; i < iter; i++) {
             lock.lock();
+
             lock.unlock();
         }
         elapsed = System.currentTimeMillis() - start;

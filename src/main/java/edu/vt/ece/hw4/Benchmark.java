@@ -57,7 +57,7 @@ public class Benchmark {
                     runLongCS(lock, threadCount, iters);
                     break;
                 case "barrier":
-                    Barrier b = new TTASBarrier(threadCount);
+                    TTASBarrier b = new TTASBarrier(threadCount);
                     runBarrierCS(lock,threadCount,iters);
                     break;
                     //throw new UnsupportedOperationException("Complete this.");

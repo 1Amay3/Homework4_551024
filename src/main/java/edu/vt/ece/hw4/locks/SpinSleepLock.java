@@ -14,40 +14,34 @@ public class SpinSleepLock implements Lock {
 
     @Override
     public void lock() {
-        if (SpinningThreads.get() < maxSpin.get()) {
-            while (true) {
-                if (!locked.getAndSet(true)) {
+        if(SpinningThreads.incrementAndGet()<=maxSpin.get()) {
+            while(true){
+                if(locked.compareAndSet(false,true)){
                     SpinningThreads.decrementAndGet();
-                }
-                if (SpinningThreads.get() > maxSpin.get()) {
-                    SpinningThreads.decrementAndGet();
-                    break;
+                    return;
                 }
             }
-
-            while (true) {
-                synchronized (this) {
-                    if (!locked.get()) {
-                        locked.set(true);
+        } else{
+            SpinningThreads.decrementAndGet();
+            synchronized(this){
+                while(true){
+                    if(locked.compareAndSet(false,true)){
                         return;
-                    }
-                    try {
+                    } try{
                         wait();
-                    } catch (InterruptedException e) {
+                    }catch(InterruptedException e){
                         Thread.currentThread().interrupt();
                     }
                 }
             }
         }
-
-
     }
 
     @Override
     public void unlock() {
         locked.set(false);
-        synchronized (this) {
-            notify();
+        synchronized(this){
+            notifyAll();
         }
     }
 }
