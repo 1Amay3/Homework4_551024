@@ -12,11 +12,14 @@ public class BarrierCSTestThread extends Thread implements ThreadId{
     private long elapsed;
     private int iter;
     private Counter counter;
+    private TTASBarrier barrier;
 
-    public BarrierCSTestThread(Lock lock,Counter counter, int iter) {
+    public BarrierCSTestThread(Lock lock,Counter counter, int iter, TTASBarrier barrier) {
         id = ID_GEN++;
         this.lock =lock;
         this.iter = iter;
+        this.barrier = barrier;
+        this.counter = counter;
     }
     public static void reset() {
         ID_GEN = 0;
@@ -25,9 +28,15 @@ public class BarrierCSTestThread extends Thread implements ThreadId{
     public void run() {
         long start = System.currentTimeMillis();
         for (int i = 0; i < iter; i++) {
+            barrier.enter();
             lock.lock();
+            try {
+                counter.getAndIncrement();
+            }finally {
+                lock.unlock();
+            }
 
-            lock.unlock();
+            barrier.enter();
         }
         elapsed = System.currentTimeMillis() - start;
     }

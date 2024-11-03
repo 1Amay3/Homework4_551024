@@ -58,7 +58,7 @@ public class Benchmark {
                     break;
                 case "barrier":
                     TTASBarrier b = new TTASBarrier(threadCount);
-                    runBarrierCS(lock,threadCount,iters);
+                    runBarrierCS(lock,threadCount,iters,b);
                     break;
                     //throw new UnsupportedOperationException("Complete this.");
                 default:
@@ -132,13 +132,13 @@ public class Benchmark {
         System.out.println("Average time per thread is " + totalTime / threadCount + "ms");
     }
 
-    static void runBarrierCS(Lock lock, int threadCount , int iters) throws Exception{
+    static void runBarrierCS(Lock lock, int threadCount , int iters , TTASBarrier barrier) throws Exception{
         final Counter counter = new Counter(0);
         final BarrierCSTestThread[] threads = new BarrierCSTestThread[threadCount];
         BarrierCSTestThread.reset();
 
         for (int t = 0; t < threadCount; t++) {
-            threads[t] = new BarrierCSTestThread(lock, counter, iters);
+            threads[t] = new BarrierCSTestThread(lock, counter, iters, barrier);
         }
 
         for (int t = 0; t < threadCount; t++) {
