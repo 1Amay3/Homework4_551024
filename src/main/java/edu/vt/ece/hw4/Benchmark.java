@@ -60,7 +60,7 @@ public class Benchmark {
                     break;
                 case "barrier":
                     TTASBarrier b = new TTASBarrier(threadCount);
-                    ArrayBarrier c = new ArrayBarrier(threadCount);
+
                     runBarrierCS(lock,threadCount,iters,b);
                     break;
                 default:
