@@ -12,8 +12,10 @@ public class TTASBarrier implements Barrier {
         this.n = n;
     }
     public void enter() {
+
         while(true){
             while(state.get()){
+
                 if(!state.getAndSet(true)){
                     count.getAndIncrement();
                     if(count.get() ==n){

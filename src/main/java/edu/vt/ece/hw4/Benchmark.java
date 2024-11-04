@@ -61,7 +61,7 @@ public class Benchmark {
                 case "barrier":
                     TTASBarrier b = new TTASBarrier(threadCount);
 
-                    runBarrierCS(lock,threadCount,iters,b);
+                    BarrierCSTestThread(lock,threadCount,iters,b);
                     break;
                 default:
                     throw new UnsupportedOperationException("Implement this");
