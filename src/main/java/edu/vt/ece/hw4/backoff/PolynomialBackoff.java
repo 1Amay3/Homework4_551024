@@ -2,14 +2,14 @@ package edu.vt.ece.hw4.backoff;
 
 public class PolynomialBackoff implements Backoff {
 
-    private int attempts=0;
-    private int n=2;
+    private int attempts=1;
+
 
     @Override
     public void backoff() throws InterruptedException {
-        attempts++;
-        int delay= attempts^3;
-
+        int delay= attempts*attempts;
         Thread.sleep(delay);
+        attempts++;
+
     }
 }

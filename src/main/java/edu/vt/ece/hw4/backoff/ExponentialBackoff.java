@@ -11,11 +11,11 @@ public class ExponentialBackoff implements Backoff {
     public void backoff() throws InterruptedException {
         this.attempts=0;
         this.max=10;
-        this.baseDelay=1000;
+        this.baseDelay=10;
         this.random = new Random();
 
         if(attempts>max){
-            throw new InterruptedException("Max attempts exceeded");
+            attempts=0;
         }
 
         long exponentialDelay=baseDelay*(1L << attempts);

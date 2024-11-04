@@ -17,7 +17,7 @@ public class Benchmark {
     public static void main(String[] args) throws Exception {
         String mode = args.length <= 0 ? "normal" : args[0];
         String lockClass = (args.length <= 1 ? ALOCK : args[1]);
-        int threadCount = (args.length <= 2 ? 16 : Integer.parseInt(args[2]));
+        int threadCount = (args.length <= 2 ? 8  : Integer.parseInt(args[2]));
         int totalIters = (args.length <= 3 ? 64000 : Integer.parseInt(args[3]));
         String strategy = (args.length <= 4 ? "Fixed" : args[4]);
         int iters = totalIters / threadCount;

@@ -2,14 +2,14 @@ package edu.vt.ece.hw4.backoff;
 
 public class FibonacciBackoff implements Backoff {
     private int max = 1000;
-    private int prev =0;
-    private int curr =1;
+    private int x =0;
+    private int y =1;
     @Override
     public void backoff() throws InterruptedException {
-        int backOffTime= Math.min(max,curr);
+        int backOffTime= Math.min(max, y);
         Thread.sleep(backOffTime);
-        int next = curr+prev;
-        prev = curr;
-        curr=next;
+        int z = y + x;
+        x = y;
+        y = z;
     }
 }
