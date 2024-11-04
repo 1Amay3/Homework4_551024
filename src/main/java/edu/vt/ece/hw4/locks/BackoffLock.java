@@ -25,6 +25,7 @@ public class BackoffLock implements Lock {
                 return;
             } else {            // backoff on failure
                 try {
+                    assert backoff != null;
                     backoff.backoff();
                 } catch (InterruptedException ignored) {
                 }
