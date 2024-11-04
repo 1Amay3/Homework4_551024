@@ -135,7 +135,7 @@ public class Benchmark {
         System.out.println("Average time per thread is " + totalTime / threadCount + "ms");
     }
 
-    static void runBarrierCS(Lock lock, int threadCount , int iters , TTASBarrier barrier) throws Exception{
+    static void runBarrierCS(Lock lock, int threadCount , int iters , Barrier barrier) throws Exception{
         final Counter counter = new Counter(0);
         final BarrierCSTestThread[] threads = new BarrierCSTestThread[threadCount];
         BarrierCSTestThread.reset();
