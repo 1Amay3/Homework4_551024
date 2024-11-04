@@ -12,7 +12,7 @@ public class TTASBarrier implements Barrier {
         this.n = n;
     }
     public void enter() {
-
+            System.out.println("Entering " + count);
             if(!state.getAndSet(true)){
                 count.getAndIncrement();
                 if(count.get() ==n){
