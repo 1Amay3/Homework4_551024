@@ -1,5 +1,6 @@
 package edu.vt.ece.hw4;
 
+import edu.vt.ece.hw4.barriers.ArrayBarrier;
 import edu.vt.ece.hw4.barriers.Barrier;
 import edu.vt.ece.hw4.barriers.TTASBarrier;
 import edu.vt.ece.hw4.bench.*;
@@ -18,6 +19,7 @@ public class Benchmark {
         String lockClass = (args.length <= 1 ? ALOCK : args[1]);
         int threadCount = (args.length <= 2 ? 16 : Integer.parseInt(args[2]));
         int totalIters = (args.length <= 3 ? 64000 : Integer.parseInt(args[3]));
+        String strategy = (args.length <= 4 ? "fixed" : args[4]);
         int iters = totalIters / threadCount;
 
         run(args, mode, lockClass, threadCount, iters);
@@ -58,6 +60,7 @@ public class Benchmark {
                     break;
                 case "barrier":
                     TTASBarrier b = new TTASBarrier(threadCount);
+                    ArrayBarrier c = new ArrayBarrier(threadCount);
                     runBarrierCS(lock,threadCount,iters,b);
                     break;
                     //throw new UnsupportedOperationException("Complete this.");

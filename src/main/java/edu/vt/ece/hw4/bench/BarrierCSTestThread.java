@@ -38,7 +38,6 @@ public class BarrierCSTestThread extends Thread implements ThreadId{
             }
 
         }
-        barrier.enter();
         elapsed = System.currentTimeMillis() - start;
     }
 
