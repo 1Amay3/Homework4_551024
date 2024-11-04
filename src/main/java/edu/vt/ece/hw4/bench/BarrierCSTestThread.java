@@ -26,7 +26,6 @@ public class BarrierCSTestThread extends Thread implements ThreadId{
     }
 
     public void run() {
-        barrier.enter();
         long start = System.currentTimeMillis();
         for (int i = 0; i < iter; i++) {
 
@@ -38,6 +37,7 @@ public class BarrierCSTestThread extends Thread implements ThreadId{
             }
 
         }
+        barrier.enter();
         elapsed = System.currentTimeMillis() - start;
     }
 
