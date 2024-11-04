@@ -16,7 +16,7 @@ public class TTASBarrier implements Barrier {
             if(!state.getAndSet(true)){
                 count.getAndIncrement();
                 if(count.get() ==n){
-                    count.set(0);
+                    //count.set(0);
                     state.set(false);
                     return;
                 }
