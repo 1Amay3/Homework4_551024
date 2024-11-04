@@ -23,6 +23,7 @@ public class ExponentialBackoff implements Backoff {
         long delay = maxDelay + (long)(random.nextDouble() * maxDelay);
         Thread.sleep(delay);
         attempts++;
+
     }
 
 }
