@@ -13,19 +13,20 @@ public class TTASBarrier implements Barrier {
     }
     public void enter() {
         while(true){
-            while(state.get()){
-                if(!state.getAndSet(true)){
-                    count.getAndIncrement();
-                    if(count.get() ==n){
-                        count.set(0);
-                        state.set(false);
-                        return;
-                    }
+            if(!state.getAndSet(true)){
+                count.getAndIncrement();
+                if(count.get() ==n){
+                    count.set(0);
                     state.set(false);
-                    while(count.get()<n){}
                     return;
                 }
+                state.set(false);
+                while(count.get()<n){
+                    Thread.yield();
+                }
+                return;
             }
+
         }
     }
 }
