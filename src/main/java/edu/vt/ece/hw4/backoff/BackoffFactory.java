@@ -9,9 +9,9 @@ public class BackoffFactory {
                 return new FibonacciBackoff();
             case "Linear" :
                 return new LinearBackoff();
-            case "polynomial":
+            case "Polynomial":
                 return new PolynomialBackoff();
-            case "fixed":
+            case "Fixed":
                 return new FixedBackoff();
         }
         return null;
