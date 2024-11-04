@@ -63,7 +63,6 @@ public class Benchmark {
                     ArrayBarrier c = new ArrayBarrier(threadCount);
                     runBarrierCS(lock,threadCount,iters,b);
                     break;
-                    //throw new UnsupportedOperationException("Complete this.");
                 default:
                     throw new UnsupportedOperationException("Implement this");
             }
