@@ -67,10 +67,40 @@ public class Benchmark {
                     runBarrierCS(lock, threadCount, iters, arrayBarrier);
                     break;
                     //throw new UnsupportedOperationException("Complete this.");
+                case "cluster" :
+                    int clusters = (args.length <= 5 ? 2 : Integer.parseInt(args[5]));
+                    int batchCount = (args.length <= 6 ? 3 : Integer.parseInt(args[6]));
+                    SimpleHLock simpleHLock = new SimpleHLock(clusters,batchCount);
+                    runClusterCS(simpleHLock,threadCount,iters,clusters);
+                    break;
+
                 default:
                     throw new UnsupportedOperationException("Implement this");
             }
         }
+    }
+
+    private static void runClusterCS(SimpleHLock simpleHLock, int threadCount, int iters, int clusters) throws Exception {
+        final Counter counter = new SharedCounter(0, simpleHLock);
+        final ClusterCSTestThread[] threads = new ClusterCSTestThread[threadCount];
+        ClusterCSTestThread.reset();
+
+        for(int t =0 ;t<threadCount;t++) {
+            threads[t] = new ClusterCSTestThread(simpleHLock,iters,counter,clusters);
+        }
+
+        for (int t = 0; t < threadCount; t++) {
+            threads[t].start();
+        }
+
+        long totalTime = 0;
+        for (int t = 0; t < threadCount; t++) {
+            threads[t].join();
+            totalTime += threads[t].getElapsedTime();
+        }
+
+        System.out.println("Average time per thread is " + totalTime / threadCount + "ms");
+
     }
 
     private static void runNormal(Counter counter, int threadCount, int iters) throws Exception {
