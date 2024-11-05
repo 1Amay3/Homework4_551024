@@ -5,6 +5,7 @@ import edu.vt.ece.hw4.barriers.Barrier;
 import edu.vt.ece.hw4.barriers.TTASBarrier;
 import edu.vt.ece.hw4.bench.*;
 import edu.vt.ece.hw4.locks.*;
+import edu.vt.ece.hw4.utils.ThreadCluster;
 
 public class Benchmark {
 
@@ -70,7 +71,8 @@ public class Benchmark {
                 case "cluster" :
                     int clusters = (args.length <= 5 ? 2 : Integer.parseInt(args[5]));
                     int batchCount = (args.length <= 6 ? 3 : Integer.parseInt(args[6]));
-                    SimpleHLock simpleHLock = new SimpleHLock(clusters,batchCount);
+                    ThreadCluster.setNumClusters(clusters);
+                    SimpleHLock simpleHLock = new SimpleHLock(ThreadCluster.getNumClusters(),batchCount);
                     runClusterCS(simpleHLock,threadCount,iters,clusters);
                     break;
 
