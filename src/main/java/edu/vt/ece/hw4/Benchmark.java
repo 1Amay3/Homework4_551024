@@ -67,7 +67,7 @@ public class Benchmark {
                     ArrayBarrier arrayBarrier = new ArrayBarrier(threadCount);
                     runBarrierCS(lock, threadCount, iters, arrayBarrier);
                     break;
-                //throw new UnsupportedOperationException("Complete this.");
+                    //throw new UnsupportedOperationException("Complete this.");
                 case "cluster" :
                     int clusters = (args.length <= 5 ? 2 : Integer.parseInt(args[5]));
                     int batchCount = (args.length <= 6 ? 3 : Integer.parseInt(args[6]));
