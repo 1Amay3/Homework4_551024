@@ -3,7 +3,7 @@ package edu.vt.ece.hw4.locks;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class PriorityQueueLock implements Lock {
+public class PriorityQueueLock {
     private final PriorityBlockingQueue<PriorityNode> queue;
     private final AtomicBoolean locked = new AtomicBoolean(false);
 
@@ -33,7 +33,7 @@ public class PriorityQueueLock implements Lock {
         }
     }
 
-    @Override
+
     public void lock() {
         try {
             lock(5); // Default priority if none is specified
@@ -58,7 +58,6 @@ public class PriorityQueueLock implements Lock {
         }
     }
 
-    @Override
     public void unlock() {
         locked.set(false);
         synchronized (this) {

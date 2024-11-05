@@ -5,6 +5,7 @@ import edu.vt.ece.hw4.barriers.Barrier;
 import edu.vt.ece.hw4.barriers.TTASBarrier;
 import edu.vt.ece.hw4.bench.*;
 import edu.vt.ece.hw4.locks.*;
+import edu.vt.ece.hw4.utils.ThreadCluster;
 
 public class Benchmark {
 
@@ -13,7 +14,6 @@ public class Benchmark {
     private static final String MCSLOCK = "MCSLock";
     private static final String TTASLOCK = "TTASLock";
     private static final String SPINSLEEPLOCK = "SpinSleepLock";
-    private static final String PRIORITYQUEUELOCK = "PriorityQueueLock";
 
     public static void main(String[] args) throws Exception {
         String mode = args.length <= 0 ? "normal" : args[0];
@@ -46,11 +46,6 @@ public class Benchmark {
                 case SPINSLEEPLOCK:
                     lock = new SpinSleepLock(10);
                     break;
-                case PRIORITYQUEUELOCK:
-                    lock = new PriorityQueueLock();
-                    break;
-
-
             }
 
             switch (mode.trim().toLowerCase()) {
@@ -73,6 +68,13 @@ public class Benchmark {
                     runBarrierCS(lock, threadCount, iters, arrayBarrier);
                     break;
                 //throw new UnsupportedOperationException("Complete this.");
+                case "cluster" :
+                    int clusters = (args.length <= 5 ? 2 : Integer.parseInt(args[5]));
+                    int batchCount = (args.length <= 6 ? 3 : Integer.parseInt(args[6]));
+                    ThreadCluster.setNumClusters(clusters);
+                    SimpleHLock simpleHLock = new SimpleHLock(ThreadCluster.getNumClusters(),batchCount);
+                    runClusterCS(simpleHLock,threadCount,iters,clusters);
+                    break;
 
                 default:
                     throw new UnsupportedOperationException("Implement this");
@@ -80,7 +82,28 @@ public class Benchmark {
         }
     }
 
+    private static void runClusterCS(SimpleHLock simpleHLock, int threadCount, int iters, int clusters) throws Exception {
+        final Counter counter = new SharedCounter(0, simpleHLock);
+        final ClusterCSTestThread[] threads = new ClusterCSTestThread[threadCount];
+        ClusterCSTestThread.reset();
 
+        for(int t =0 ;t<threadCount;t++) {
+            threads[t] = new ClusterCSTestThread(simpleHLock,iters,counter,clusters);
+        }
+
+        for (int t = 0; t < threadCount; t++) {
+            threads[t].start();
+        }
+
+        long totalTime = 0;
+        for (int t = 0; t < threadCount; t++) {
+            threads[t].join();
+            totalTime += threads[t].getElapsedTime();
+        }
+
+        System.out.println("Average time per thread is " + totalTime / threadCount + "ms");
+
+    }
 
     private static void runNormal(Counter counter, int threadCount, int iters) throws Exception {
         final TestThread[] threads = new TestThread[threadCount];
@@ -100,7 +123,7 @@ public class Benchmark {
             totalTime += threads[t].getElapsedTime();
         }
 
-        System.out.println("Average time per thread is " + totalTime / threadCount + "nano second");
+        System.out.println("Average time per thread is " + totalTime / threadCount + "ms");
     }
 
     private static void runEmptyCS(Lock lock, int threadCount, int iters) throws Exception {
