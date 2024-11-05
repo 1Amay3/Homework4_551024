@@ -30,20 +30,21 @@ public class SimpleHLock implements Lock {
     public void lock() {
         int cluster = ThreadCluster.getCluster() % clusters;
         localCount[cluster].incrementAndGet();
-        localLocks[cluster].lock();
 
         if(localCount[cluster].decrementAndGet() == 0){
             globalLock.lock();
         }
+
+        localLocks[cluster].lock();
 
     }
 
     @Override
     public void unlock() {
         int cluster = ThreadCluster.getCluster() % clusters;
+        localLocks[cluster].unlock();
         if(localCount[cluster].get() ==0 || localCount[cluster].get() % BATCH_COUNT == 0){
             globalLock.unlock();
         }
-        localLocks[cluster].unlock();
     }
 }
