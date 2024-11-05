@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class BarrierCSTestThread extends Thread implements ThreadId{
-    private static AtomicInteger ID_GEN = new AtomicInteger(0);
+    private static volatile AtomicInteger ID_GEN = new AtomicInteger(0);
     private Lock lock;
     private int id;
     private long elapsed;
@@ -22,28 +22,45 @@ public class BarrierCSTestThread extends Thread implements ThreadId{
         this.iter = iter;
         this.barrier = barrier;
         this.counter = counter;
+        this.elapsed = 0;
     }
     public static void reset() {
         ID_GEN.set(0);
     }
 
+    @Override
     public void run() {
-        long start = System.currentTimeMillis();
+
         for (int i = 0; i < iter; i++) {
 
-            lock.lock();
-            try {
-                counter.getAndIncrement();
-            }finally {
-                lock.unlock();
-            }
+            foo();
+            long start = System.currentTimeMillis();
             barrier.enter();
+            elapsed += System.currentTimeMillis() - start;
+            bar();
+
         }
 
-        elapsed = System.currentTimeMillis() - start;
+
     }
 
-    @Override
+    private void foo(){
+        lock.lock();
+        try {
+            counter.getAndIncrement();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void bar(){
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
     public int getThreadId() {
         return id;
     }

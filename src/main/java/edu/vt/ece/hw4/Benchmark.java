@@ -62,6 +62,7 @@ public class Benchmark {
                     TTASBarrier b = new TTASBarrier(threadCount);
                     ArrayBarrier c = new ArrayBarrier(threadCount);
                     runBarrierCS(lock,threadCount,iters,b);
+                    runBarrierCS(lock,threadCount,iters,c);
                     break;
                     //throw new UnsupportedOperationException("Complete this.");
                 default:
