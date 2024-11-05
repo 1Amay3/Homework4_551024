@@ -67,7 +67,7 @@ public class Benchmark {
                     runBarrierCS(lock, threadCount, iters, arrayBarrier);
                     break;
                 //throw new UnsupportedOperationException("Complete this.");
-                
+
                 default:
                     throw new UnsupportedOperationException("Implement this");
             }
@@ -94,7 +94,7 @@ public class Benchmark {
             totalTime += threads[t].getElapsedTime();
         }
 
-        System.out.println("Average time per thread is " + totalTime / threadCount + "ms");
+        System.out.println("Average time per thread is " + totalTime / threadCount + "nano second");
     }
 
     private static void runEmptyCS(Lock lock, int threadCount, int iters) throws Exception {
