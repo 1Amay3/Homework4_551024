@@ -1,5 +1,7 @@
 package edu.vt.ece.hw4.barriers;
 
+import edu.vt.ece.spin.ThreadID;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ArrayBarrier implements Barrier {
@@ -12,13 +14,13 @@ public class ArrayBarrier implements Barrier {
     }
     @Override
     public void enter() {
-        int threadId = (int)(Thread.currentThread().getId()%n);
+        int threadId = ThreadID.get();
 
         if(threadId ==0){
             b[0].set(1);
         } else{
             while(b[threadId-1].get() != 1){
-
+                Thread.yield();
             }
             b[threadId].set(1);
         }
