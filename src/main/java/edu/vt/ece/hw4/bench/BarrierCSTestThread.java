@@ -34,9 +34,9 @@ public class BarrierCSTestThread extends Thread implements ThreadId{
         for (int i = 0; i < iter; i++) {
 
             foo();
-            long start = System.nanoTime();
+            long start = System.currentTimeMillis();
             barrier.enter();
-            elapsed += System.nanoTime() - start;
+            elapsed += System.currentTimeMillis() - start;
             bar();
 
         }

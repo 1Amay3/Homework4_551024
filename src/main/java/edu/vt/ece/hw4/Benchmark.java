@@ -13,6 +13,7 @@ public class Benchmark {
     private static final String MCSLOCK = "MCSLock";
     private static final String TTASLOCK = "TTASLock";
     private static final String SPINSLEEPLOCK = "SpinSleepLock";
+    private static final String PRIORITYQUEUELOCK = "PriorityQueueLock";
 
     public static void main(String[] args) throws Exception {
         String mode = args.length <= 0 ? "normal" : args[0];
@@ -45,6 +46,11 @@ public class Benchmark {
                 case SPINSLEEPLOCK:
                     lock = new SpinSleepLock(10);
                     break;
+                case PRIORITYQUEUELOCK:
+                    lock = new PriorityQueueLock();
+                    break;
+
+
             }
 
             switch (mode.trim().toLowerCase()) {

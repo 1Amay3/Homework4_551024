@@ -5,23 +5,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class SpinSleepLock implements Lock {
     private AtomicBoolean locked = new AtomicBoolean(false);
-    private AtomicInteger Spinning = new AtomicInteger(0);
-    private AtomicInteger threadLimit = new AtomicInteger(0);
+    private AtomicInteger SpinningThreads = new AtomicInteger(0);
+    private AtomicInteger maxSpin = new AtomicInteger(0);
 
     public SpinSleepLock(int maxSpin) {
-        this.threadLimit.set(maxSpin);
+        this.maxSpin.set(maxSpin);
     }
 
     @Override
     public void lock() {
-        if(Spinning.incrementAndGet()<= threadLimit.get()) {
+        if(SpinningThreads.incrementAndGet()<=maxSpin.get()) {
             while(true){
-
                 if(locked.compareAndSet(false,true)){
-                    Spinning.decrementAndGet();
-                    return;}}
+                    SpinningThreads.decrementAndGet();
+                    return;
+                }
+            }
         } else{
-            Spinning.decrementAndGet();
+            SpinningThreads.decrementAndGet();
             synchronized(this){
                 while(true){
                     if(locked.compareAndSet(false,true)){
@@ -30,7 +31,8 @@ public class SpinSleepLock implements Lock {
                         wait();
                     }catch(InterruptedException e){
                         Thread.currentThread().interrupt();
-                    }}
+                    }
+                }
             }
         }
     }
