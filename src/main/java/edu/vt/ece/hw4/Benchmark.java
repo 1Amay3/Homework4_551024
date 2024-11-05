@@ -58,11 +58,13 @@ public class Benchmark {
                 case "long":
                     runLongCS(lock, threadCount, iters);
                     break;
-                case "barrier":
-                    //TTASBarrier b = new TTASBarrier(threadCount);
-                    ArrayBarrier c = new ArrayBarrier(threadCount);
-                    //runBarrierCS(lock,threadCount,iters,b);
-                    runBarrierCS(lock,threadCount,iters,c);
+                case "barrier_ttas":
+                    TTASBarrier ttasBarrier = new TTASBarrier(threadCount);
+                    runBarrierCS(lock, threadCount, iters, ttasBarrier);
+                    break;
+                case "barrier_array":
+                    ArrayBarrier arrayBarrier = new ArrayBarrier(threadCount);
+                    runBarrierCS(lock, threadCount, iters, arrayBarrier);
                     break;
                     //throw new UnsupportedOperationException("Complete this.");
                 default:
