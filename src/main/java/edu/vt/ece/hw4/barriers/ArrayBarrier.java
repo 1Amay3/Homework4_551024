@@ -7,9 +7,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ArrayBarrier implements Barrier {
     private AtomicInteger[] b;
     private int n;
+    private AtomicInteger count = new AtomicInteger(0);
 
     public ArrayBarrier( int n) {
         this.b = new AtomicInteger[n];
+        for (int i = 0; i < n; i++) {
+            this.b[i] = new AtomicInteger(0);
+        }
         this.n = n;
     }
     @Override
