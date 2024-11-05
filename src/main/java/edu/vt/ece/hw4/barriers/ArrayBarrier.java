@@ -18,12 +18,12 @@ public class ArrayBarrier implements Barrier {
 
     @Override
     public void enter() {
-        int threadId = ThreadID.get();
+        int threadId = ThreadID.get() % n;
 
         if (threadId == 0) {
             b[0].set(1);
         } else {
-            while (b[threadId - 1].get() != 1) {
+            while (b[(threadId - 1 + n) % n].get() != 1) {
                 Thread.yield();
             }
             b[threadId].set(1);
