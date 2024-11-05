@@ -27,7 +27,7 @@ public class SimpleHLock implements Lock {
 
     @Override
     public void lock() {
-        int cluster = ThreadCluster.getCluster();
+        int cluster = ThreadCluster.getCluster() % clusters;
         localCount[cluster].incrementAndGet();
         localLocks[cluster].lock();
         localCount[cluster].decrementAndGet();
