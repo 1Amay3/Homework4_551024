@@ -3,7 +3,6 @@ package edu.vt.ece.hw4.locks;
 import edu.vt.ece.hw4.utils.ThreadCluster;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SimpleHLock implements Lock {
 
@@ -11,8 +10,7 @@ public class SimpleHLock implements Lock {
     private final Lock[] localLocks;
     private final int clusters;
     private final int BATCH_COUNT;
-    private final AtomicInteger[] localCount; // number of threads waiting per cluster
-    private final AtomicBoolean[] globalLockHeld;
+    private final AtomicInteger[] localCount;
 
     public SimpleHLock(int clusters, int batchCount) {
         this.globalLock = new TTASLock();
@@ -20,36 +18,47 @@ public class SimpleHLock implements Lock {
         this.clusters = clusters;
         this.BATCH_COUNT = batchCount;
         this.localCount = new AtomicInteger[clusters];
-        this.globalLockHeld = new AtomicBoolean[clusters];
         for(int i = 0; i < clusters; i++) {
             localLocks[i] = new TTASLock();
             localCount[i] = new AtomicInteger(0);
-            globalLockHeld[i] = new AtomicBoolean(false);
         }
     }
 
     @Override
     public void lock() {
         int cluster = ThreadCluster.getCluster() % clusters;
-        int count = localCount[cluster].getAndIncrement();
+        boolean acquiredGlobal = false;
 
-        if (count == 0) {
+        localCount[cluster].incrementAndGet();
+
+        if (localCount[cluster].get() == 1) {
             globalLock.lock();
-            globalLockHeld[cluster].set(true);
+            acquiredGlobal = true;
         }
 
         localLocks[cluster].lock();
+
+        if (acquiredGlobal) {
+            globalLock.unlock();
+        }
     }
 
     @Override
     public void unlock() {
         int cluster = ThreadCluster.getCluster() % clusters;
+
         localLocks[cluster].unlock();
 
-        int remainingCount = localCount[cluster].decrementAndGet();
+        int remaining = localCount[cluster].decrementAndGet();
 
-        if (remainingCount == 0 || remainingCount % BATCH_COUNT == 0) {
-            if (globalLockHeld[cluster].compareAndSet(true, false)) {
+        if (remaining == 0 || remaining % BATCH_COUNT == 0) {
+            globalLock.lock();
+            try {
+
+                if (localCount[cluster].get() == 0 || localCount[cluster].get() % BATCH_COUNT == 0) {
+
+                }
+            } finally {
                 globalLock.unlock();
             }
         }
